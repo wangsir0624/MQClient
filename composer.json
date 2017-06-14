@@ -1,0 +1,29 @@
+{
+  "name": "wangjian/mqclient",
+  "description": "MQServer的客户端API",
+  "license": "MIT",
+  "keywords": ["MQ", "Message Queue"],
+  "version": "1.0.0",
+  "authors": [
+    {
+      "name": "Wangjian",
+      "email": "1636801376@qq.com"
+    }
+  ],
+  "require": {
+    "php": ">=5.3.0"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^5.1"
+  },
+  "autoload": {
+    "psr-4": {
+      "Wangjian\\MQClient\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Wangjian\\MQClient\\Test\\": "test"
+    }
+  }
+}
