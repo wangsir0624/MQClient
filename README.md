@@ -1,0 +1,2 @@
+# MQClient
+我编写的队列服务器MQServer的客户端，可以使用这个包与MQServer进行交互
