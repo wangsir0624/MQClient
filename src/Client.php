@@ -4,8 +4,18 @@ namespace Wangjian\MQClient;
 use Wangjian\MQClient\Connection\Connection;
 
 class Client {
+    /**
+     * the connection interface
+     * @var Connection
+     */
     protected $connection;
 
+    /**
+     * Client constructor.
+     * @param string $ip
+     * @param int $port
+     * @param int $timeout
+     */
     public function __construct($ip, $port, $timeout = 5) {
         $stream = stream_socket_client("tcp://$ip:$port", $errno, $errmsg, $timeout);
         if(!$stream) {
@@ -15,6 +25,12 @@ class Client {
         $this->connection = new Connection($stream);
     }
 
+    /**
+     * create a queue
+     * @param string $queue  the queue name
+     * @param int $max_items  the max items in the queue
+     * @return bool
+     */
     public function createQueue($queue, $max_items = 10000) {
         $this->connection->send("new $queue $max_items");
 
@@ -26,6 +42,11 @@ class Client {
         }
     }
 
+    /**
+     * whether a queue exists
+     * @param string $queue  the queue name
+     * @return bool
+     */
     public function existsQueue($queue) {
         $this->connection->send("exists $queue");
 
@@ -37,6 +58,11 @@ class Client {
         }
     }
 
+    /**
+     * delete a queue
+     * @param string $queue  the queue name
+     * @return bool
+     */
     public function deleteQueue($queue) {
         $this->connection->send("del $queue");
 
@@ -48,6 +74,13 @@ class Client {
         }
     }
 
+    /**
+     * add an item to the tail of a queue
+     * @param string $queue  the queue name
+     * @param mixed $item
+     * @param bool $top  whether add the item at the top of the queue
+     * @return bool
+     */
     public function inQueue($queue, $item, $top = false) {
         if(is_array($item) || is_object($item)) {
             $item = serialize($item);
@@ -63,6 +96,10 @@ class Client {
         }
     }
 
+    /**
+     * pop up an item from a queue
+     * @return mixed
+     */
     public function unQueue() {
         $queues = implode(' ', func_get_args());
 
@@ -80,5 +117,12 @@ class Client {
         } else {
             return false;
         }
+    }
+
+    /**
+     * close the connection
+     */
+    public function close() {
+        $this->connection->close();
     }
 }

@@ -4,17 +4,39 @@ namespace Wangjian\MQClient\Connection;
 use Wangjian\MQClient\Protocol\MQServerProtocol;
 
 class Connection implements ConnectionInterface {
+    /**
+     * the socket stream
+     * @var resource
+     */
     protected $stream;
 
+    /**
+     * the receive buffer
+     * @var string
+     */
     protected $recv_buffer = '';
 
+    /**
+     * the receive buffer size
+     * @var int
+     */
     protected $recv_buffer_size = 1048576;
 
+    /**
+     * Connection constructor.
+     * @param resource $stream
+     */
     public function __construct($stream) {
         $this->stream = $stream;
         stream_set_read_buffer($this->stream, $this->recv_buffer_size);
     }
 
+    /**
+     * send buffer
+     * @param string $buffer
+     * @param bool $raw  whether encode the buffer with the protocol
+     * @return int
+     */
     public function send($buffer, $raw = false) {
         if($buffer) {
             if(!$raw) {
@@ -34,6 +56,10 @@ class Connection implements ConnectionInterface {
         return 0;
     }
 
+    /**
+     * handle message
+     * @return string
+     */
     public function handleMessage() {
         $this->recv_buffer .= fread($this->stream, $this->recv_buffer_size);
         $package_size = MQServerProtocol::input($this->recv_buffer, $this);
@@ -47,6 +73,9 @@ class Connection implements ConnectionInterface {
         }
     }
 
+    /**
+     * close the connection
+     */
     public function close() {
         fclose($this->stream);
     }
